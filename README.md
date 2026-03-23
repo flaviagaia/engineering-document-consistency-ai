@@ -8,7 +8,8 @@ Projeto em Python para reproduzir, de forma pública e ética, uma solução de 
 - extrair cláusulas numeradas;
 - encontrar cláusulas semanticamente parecidas entre documentos;
 - detectar inconsistências de prazo, responsabilidade, critério de medição e padrão técnico;
-- oferecer uma camada de revisão humana em dashboard.
+- oferecer uma camada de revisão humana em dashboard;
+- permitir consultas e navegação dos documentos em um único `Streamlit`.
 
 ### O que foi reproduzido
 
@@ -48,7 +49,7 @@ flowchart LR
     E --> F["Similar clause pairs"]
     F --> G["Rule-based inconsistency detection"]
     G --> H["Findings table"]
-    H --> I["Streamlit review dashboard"]
+    H --> I["Integrated Streamlit workspace"]
 ```
 
 ### Técnicas usadas
@@ -78,6 +79,23 @@ flowchart LR
   Para o dashboard de revisão.
 - `plotly`
   Para visualização simples das contagens por tipo de inconsistência.
+
+### Hub integrado no Streamlit
+
+O aplicativo foi organizado como uma experiência única para o usuário final, com módulos dentro do mesmo front:
+
+- `Ingestão`
+  Resumo dos documentos processados.
+- `Cláusulas`
+  Visualização e filtro das cláusulas extraídas.
+- `Busca Semântica`
+  Pesquisa por trechos semanticamente semelhantes.
+- `Consistência`
+  Lista dos conflitos detectados e seus tipos.
+- `Revisão Humana`
+  Aprovação, rejeição ou marcação para análise.
+- `Pergunte aos Documentos`
+  Camada de consulta assistida baseada nas cláusulas e inconsistências.
 
 ### Estrutura
 
@@ -118,7 +136,8 @@ Python project designed to publicly and ethically reproduce an engineering docum
 - extract numbered clauses;
 - find semantically similar clauses across documents;
 - detect conflicts in deadlines, responsibilities, measurement rules, and technical standards;
-- provide a human review layer through a dashboard.
+- provide a human review layer through a dashboard;
+- expose all modules through a single `Streamlit` workspace.
 
 ### What was reproduced
 
@@ -156,7 +175,7 @@ flowchart LR
     E --> F["Similar clause pairs"]
     F --> G["Rule-based inconsistency detection"]
     G --> H["Findings table"]
-    H --> I["Streamlit review dashboard"]
+    H --> I["Integrated Streamlit workspace"]
 ```
 
 ### Techniques
@@ -180,3 +199,14 @@ flowchart LR
 - `scikit-learn`
 - `streamlit`
 - `plotly`
+
+### Integrated Streamlit workspace
+
+The application was designed as a single user-facing workspace with multiple modules:
+
+- `Ingestion`
+- `Clauses`
+- `Semantic Search`
+- `Consistency`
+- `Human Review`
+- `Ask the Documents`

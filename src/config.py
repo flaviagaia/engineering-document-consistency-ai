@@ -8,4 +8,4 @@ ARTIFACTS_DIR = PROJECT_ROOT / "artifacts"
 CLAUSES_PATH = ARTIFACTS_DIR / "clauses.csv"
 SIMILARITY_PATH = ARTIFACTS_DIR / "similar_clause_pairs.csv"
 INCONSISTENCIES_PATH = ARTIFACTS_DIR / "inconsistencies.csv"
-
+REVIEW_FEEDBACK_PATH = ARTIFACTS_DIR / "review_feedback.csv"
