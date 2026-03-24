@@ -11,6 +11,15 @@ Projeto em Python para reproduzir, de forma pública e ética, uma solução de 
 - oferecer uma camada de revisão humana em dashboard;
 - permitir consultas e navegação dos documentos em um único `Streamlit`.
 
+### Para que serve
+
+Este projeto serve para apoiar equipes que precisam comparar documentos de engenharia e identificar conflitos antes que eles virem retrabalho, atraso ou erro operacional. Na prática, ele ajuda a:
+
+- localizar divergências entre memoriais, anexos e diretrizes;
+- comparar cláusulas parecidas sem leitura manual documento por documento;
+- priorizar revisão humana em conflitos de prazo, responsabilidade e padrão técnico;
+- centralizar consulta e validação em uma interface única.
+
 ### O que foi reproduzido
 
 Este case foi inspirado em soluções corporativas de:
@@ -138,6 +147,15 @@ Python project designed to publicly and ethically reproduce an engineering docum
 - detect conflicts in deadlines, responsibilities, measurement rules, and technical standards;
 - provide a human review layer through a dashboard;
 - expose all modules through a single `Streamlit` workspace.
+
+### What it is for
+
+This project is meant to support teams that need to compare engineering documents and identify conflicts before they become rework, delays, or operational errors. In practice, it helps users:
+
+- locate divergences across memorials, appendices, and technical guidelines;
+- compare similar clauses without manual page-by-page review;
+- prioritize human validation on deadline, responsibility, and standard conflicts;
+- centralize consultation and validation in a single interface.
 
 ### What was reproduced
 

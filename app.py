@@ -9,19 +9,79 @@ from src.pipeline import run_pipeline
 from src.query_assistant import answer_question, save_review_feedback, semantic_search_clauses
 
 
-st.set_page_config(page_title="Engineering Document Consistency AI", layout="wide")
-st.title("Engineering Document Consistency AI")
-st.caption(
-    "Hub único para ingestão de documentos, extração de cláusulas, busca semântica, detecção de inconsistências e revisão humana."
+st.set_page_config(page_title="Engineering Document Assistant", layout="wide")
+
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background:
+            radial-gradient(circle at top left, rgba(31, 111, 235, 0.10), transparent 30%),
+            radial-gradient(circle at top right, rgba(16, 185, 129, 0.10), transparent 28%),
+            #f6f8fb;
+    }
+    .hero-card, .soft-card {
+        background: white;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 20px;
+        padding: 1.2rem 1.3rem;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    }
+    .hero-card h1 {
+        margin: 0 0 0.3rem 0;
+        font-size: 2rem;
+    }
+    .hero-card p, .soft-card p {
+        margin: 0;
+        color: #475569;
+    }
+    .pill-row {
+        display: flex;
+        gap: 0.7rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+    }
+    .pill {
+        background: #eef4ff;
+        color: #1d4ed8;
+        border-radius: 999px;
+        padding: 0.45rem 0.8rem;
+        font-size: 0.92rem;
+        font-weight: 600;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
 )
 
-top_a, top_b = st.columns([1, 3])
-with top_a:
-    if st.button("Gerar / atualizar base", use_container_width=True):
+st.markdown(
+    """
+    <div class="hero-card">
+        <h1>Engineering Document Assistant</h1>
+        <p>Consulte documentos, encontre cláusulas parecidas e revise conflitos de forma guiada, sem precisar navegar por relatórios técnicos brutos.</p>
+        <div class="pill-row">
+            <div class="pill">Consulta em linguagem natural</div>
+            <div class="pill">Busca semântica</div>
+            <div class="pill">Revisão humana</div>
+            <div class="pill">Análise de inconsistências</div>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+top_left, top_right = st.columns([1, 2])
+with top_left:
+    if st.button("Atualizar documentos e análise", use_container_width=True):
         run_pipeline()
-with top_b:
-    st.info(
-        "Esta versão pública reproduz a lógica de uma plataforma integrada de documentos de engenharia usando PDFs sintéticos, TF-IDF, similaridade semântica e revisão humana."
+with top_right:
+    st.markdown(
+        """
+        <div class="soft-card">
+            <p>Esta demonstração pública usa documentos sintéticos de engenharia para reproduzir um fluxo integrado de ingestão, extração de cláusulas, comparação entre documentos e revisão assistida.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
 
 try:
@@ -29,100 +89,167 @@ try:
     pairs = pd.read_csv(SIMILARITY_PATH)
     inconsistencies = pd.read_csv(INCONSISTENCIES_PATH)
 except FileNotFoundError:
-    st.warning("Os artefatos ainda não foram gerados. Clique em 'Gerar / atualizar base'.")
+    st.warning("Os artefatos ainda não foram gerados. Clique em 'Atualizar documentos e análise'.")
     st.stop()
 
 metric_1, metric_2, metric_3, metric_4 = st.columns(4)
-metric_1.metric("Documentos", clauses["document_name"].nunique())
-metric_2.metric("Cláusulas", len(clauses))
-metric_3.metric("Pares similares", len(pairs))
-metric_4.metric("Inconsistências", len(inconsistencies))
+metric_1.metric("Documentos disponíveis", clauses["document_name"].nunique())
+metric_2.metric("Cláusulas encontradas", len(clauses))
+metric_3.metric("Trechos comparáveis", len(pairs))
+metric_4.metric("Conflitos potenciais", len(inconsistencies))
 
-tab_ingestion, tab_clauses, tab_search, tab_consistency, tab_review, tab_qa = st.tabs(
+tab_assistant, tab_conflicts, tab_documents, tab_search, tab_review, tab_technical = st.tabs(
     [
-        "Ingestão",
-        "Cláusulas",
-        "Busca Semântica",
-        "Consistência",
-        "Revisão Humana",
-        "Pergunte aos Documentos",
+        "Assistente",
+        "Conflitos Encontrados",
+        "Documentos",
+        "Buscar Trechos",
+        "Revisão",
+        "Detalhes Técnicos",
     ]
 )
 
-with tab_ingestion:
-    st.subheader("Documentos ingeridos")
-    ingest_summary = clauses.groupby("document_name").agg(
-        clauses=("clause_id", "count"),
-        first_page=("page_number", "min"),
-        last_page=("page_number", "max"),
-    ).reset_index()
-    st.dataframe(ingest_summary, use_container_width=True, hide_index=True)
-    st.caption("Os PDFs são sintéticos, mas foram construídos para simular memoriais, anexos e instruções técnicas com conflitos reais de engenharia.")
+with tab_assistant:
+    st.subheader("Faça uma pergunta sobre os documentos")
+    st.caption("Exemplos: 'Quais são os principais conflitos de prazo?' ou 'Quem é responsável pela verificação de qualidade?'")
 
-with tab_clauses:
-    st.subheader("Cláusulas extraídas")
-    selected_document = st.selectbox("Filtrar documento", ["Todos"] + sorted(clauses["document_name"].unique().tolist()))
-    clauses_view = clauses if selected_document == "Todos" else clauses[clauses["document_name"] == selected_document]
-    st.dataframe(clauses_view, use_container_width=True, hide_index=True)
+    example_col1, example_col2, example_col3 = st.columns(3)
+    if example_col1.button("Prazos críticos", use_container_width=True):
+        st.session_state["doc_question"] = "Quais são os principais conflitos de prazo?"
+    if example_col2.button("Responsabilidades", use_container_width=True):
+        st.session_state["doc_question"] = "Quem é responsável pela verificação de qualidade?"
+    if example_col3.button("Padrões técnicos", use_container_width=True):
+        st.session_state["doc_question"] = "Existe conflito de padrão técnico?"
 
-with tab_search:
-    st.subheader("Busca semântica entre cláusulas")
-    query = st.text_input("Consulta", value="delivery deadline for 3D model revision")
-    top_k = st.slider("Top K", min_value=3, max_value=10, value=5)
-    if query.strip():
-        search_results = semantic_search_clauses(clauses, query, top_k=top_k)
-        st.dataframe(search_results, use_container_width=True, hide_index=True)
+    question = st.text_input(
+        "Sua pergunta",
+        value=st.session_state.get("doc_question", "Quais são os principais conflitos de prazo?"),
+        key="doc_question",
+    )
 
-with tab_consistency:
-    st.subheader("Análise de inconsistência")
+    if question.strip():
+        qa_result = answer_question(question, clauses, inconsistencies)
+        st.markdown("### Resposta")
+        st.write(qa_result["answer"])
+        if isinstance(qa_result["evidence"], pd.DataFrame) and not qa_result["evidence"].empty:
+            st.markdown("### Evidências mais relevantes")
+            st.dataframe(qa_result["evidence"], use_container_width=True, hide_index=True)
+
+with tab_conflicts:
+    st.subheader("Resumo dos conflitos detectados")
     if not inconsistencies.empty:
         count_df = inconsistencies["issue_type"].value_counts().rename_axis("issue_type").reset_index(name="count")
         st.plotly_chart(
-            px.bar(count_df, x="issue_type", y="count", labels={"issue_type": "Tipo", "count": "Quantidade"}),
+            px.bar(
+                count_df,
+                x="issue_type",
+                y="count",
+                labels={"issue_type": "Tipo de conflito", "count": "Quantidade"},
+                color="issue_type",
+            ),
             use_container_width=True,
         )
-    st.dataframe(inconsistencies, use_container_width=True, hide_index=True)
-    st.caption("A detecção atual usa similaridade semântica para recuperar pares de cláusulas comparáveis e regras para identificar conflito objetivo.")
+
+        selected_type = st.selectbox("Filtrar por tipo de conflito", ["Todos"] + sorted(inconsistencies["issue_type"].unique().tolist()))
+        view = inconsistencies if selected_type == "Todos" else inconsistencies[inconsistencies["issue_type"] == selected_type]
+        view = view.copy()
+        view["resumo"] = view["left_document"] + "  x  " + view["right_document"]
+        st.dataframe(
+            view[["resumo", "left_clause_id", "right_clause_id", "issue_type", "left_value", "right_value", "explanation"]],
+            use_container_width=True,
+            hide_index=True,
+        )
+    else:
+        st.success("Nenhum conflito potencial foi identificado.")
+
+with tab_documents:
+    st.subheader("Documentos e cláusulas")
+    document_names = sorted(clauses["document_name"].unique().tolist())
+    selected_document = st.selectbox("Escolha um documento", document_names)
+    document_clauses = clauses[clauses["document_name"] == selected_document].copy()
+
+    summary_cols = st.columns(3)
+    summary_cols[0].metric("Cláusulas no documento", len(document_clauses))
+    summary_cols[1].metric("Primeira página", int(document_clauses["page_number"].min()))
+    summary_cols[2].metric("Última página", int(document_clauses["page_number"].max()))
+
+    for row in document_clauses.itertuples():
+        with st.container(border=True):
+            st.markdown(f"**Cláusula {row.clause_id}**")
+            st.write(row.clause_text)
+
+with tab_search:
+    st.subheader("Buscar trechos parecidos")
+    query = st.text_input("O que você quer localizar nos documentos?", value="delivery deadline for 3D model revision")
+    top_k = st.slider("Quantidade de resultados", min_value=3, max_value=10, value=5)
+    if query.strip():
+        search_results = semantic_search_clauses(clauses, query, top_k=top_k)
+        if search_results.empty:
+            st.info("Nenhum trecho relevante foi encontrado.")
+        else:
+            for row in search_results.itertuples():
+                with st.container(border=True):
+                    st.markdown(f"**{row.document_name} | cláusula {row.clause_id}**")
+                    st.write(row.clause_text)
+                    st.caption(f"Similaridade: {row.similarity:.3f}")
 
 with tab_review:
-    st.subheader("Revisão humana dos achados")
+    st.subheader("Validação humana")
+    st.caption("Use esta área para confirmar se o conflito encontrado faz sentido do ponto de vista do negócio.")
+
     review_options = [
         f"{row.left_document}::{row.left_clause_id} <> {row.right_document}::{row.right_clause_id} [{row.issue_type}]"
         for row in inconsistencies.itertuples()
     ]
+
     if review_options:
-        selected_issue = st.selectbox("Selecione um achado", review_options)
+        selected_issue = st.selectbox("Selecione um conflito para revisar", review_options)
         selected_idx = review_options.index(selected_issue)
         finding = inconsistencies.iloc[selected_idx]
-        st.markdown(f"**Resumo:** {finding['explanation']}")
+
+        issue_col1, issue_col2 = st.columns(2)
+        with issue_col1:
+            st.markdown("**Documento A**")
+            st.write(finding["left_document"])
+            st.write(f"Cláusula: {finding['left_clause_id']}")
+            st.write(f"Valor detectado: {finding['left_value']}")
+        with issue_col2:
+            st.markdown("**Documento B**")
+            st.write(finding["right_document"])
+            st.write(f"Cláusula: {finding['right_clause_id']}")
+            st.write(f"Valor detectado: {finding['right_value']}")
+
+        st.info(finding["explanation"])
+
         verdict = st.radio(
-            "O achado faz sentido?",
+            "Como você avalia esse achado?",
             options=["approved", "rejected", "needs_review"],
             format_func=lambda value: {
-                "approved": "👍 Confirmado",
-                "rejected": "👎 Rejeitado",
-                "needs_review": "🕵️ Precisa de análise",
+                "approved": "👍 Faz sentido",
+                "rejected": "👎 Não faz sentido",
+                "needs_review": "🕵️ Precisa de análise adicional",
             }[value],
             horizontal=True,
         )
-        notes = st.text_area("Justificativa / observações", height=120)
-        if st.button("Salvar revisão"):
+        notes = st.text_area("Comentário ou justificativa", height=120)
+        if st.button("Salvar avaliação"):
             item_id = f"{finding['left_document']}::{finding['left_clause_id']}::{finding['right_document']}::{finding['right_clause_id']}"
             save_review_feedback("inconsistency", item_id, verdict, notes)
-            st.success("Revisão salva.")
+            st.success("Avaliação salva com sucesso.")
     else:
-        st.info("Nenhum achado disponível para revisão.")
+        st.info("Não há conflitos para revisar no momento.")
 
     if REVIEW_FEEDBACK_PATH.exists():
-        st.markdown("**Histórico recente**")
-        st.dataframe(pd.read_csv(REVIEW_FEEDBACK_PATH).tail(20), use_container_width=True, hide_index=True)
+        with st.expander("Ver histórico de avaliações"):
+            st.dataframe(pd.read_csv(REVIEW_FEEDBACK_PATH).tail(20), use_container_width=True, hide_index=True)
 
-with tab_qa:
-    st.subheader("Pergunte aos documentos")
-    question = st.text_input("Pergunta", value="Quais são os principais conflitos de prazo?")
-    if question.strip():
-        qa_result = answer_question(question, clauses, inconsistencies)
-        st.write(qa_result["answer"])
-        if isinstance(qa_result["evidence"], pd.DataFrame) and not qa_result["evidence"].empty:
-            st.markdown("**Evidências**")
-            st.dataframe(qa_result["evidence"], use_container_width=True, hide_index=True)
+with tab_technical:
+    st.subheader("Detalhes técnicos")
+    st.caption("Esta aba mantém a rastreabilidade técnica, mas fica separada da experiência principal do usuário.")
+    tech_col1, tech_col2 = st.columns(2)
+    with tech_col1:
+        st.markdown("**Pares semanticamente semelhantes**")
+        st.dataframe(pairs.head(20), use_container_width=True, hide_index=True)
+    with tech_col2:
+        st.markdown("**Base completa de inconsistências**")
+        st.dataframe(inconsistencies, use_container_width=True, hide_index=True)
