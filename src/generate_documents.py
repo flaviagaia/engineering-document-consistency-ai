@@ -46,11 +46,14 @@ DOCUMENTS = {
 }
 
 
-def build_sample_contract_pdfs() -> list[str]:
+def build_sample_contract_pdfs(force: bool = False) -> list[str]:
     CONTRACTS_DIR.mkdir(parents=True, exist_ok=True)
     generated_files = []
     for filename, clauses in DOCUMENTS.items():
         path = CONTRACTS_DIR / filename
+        if path.exists() and not force:
+            generated_files.append(filename)
+            continue
         pdf = canvas.Canvas(str(path), pagesize=A4)
         width, height = A4
         y = height - 60
@@ -68,4 +71,3 @@ def build_sample_contract_pdfs() -> list[str]:
         pdf.save()
         generated_files.append(filename)
     return generated_files
-
