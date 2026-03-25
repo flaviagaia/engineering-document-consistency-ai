@@ -16,24 +16,28 @@ st.markdown(
     <style>
     .stApp {
         background:
-            radial-gradient(circle at top left, rgba(31, 111, 235, 0.10), transparent 30%),
-            radial-gradient(circle at top right, rgba(16, 185, 129, 0.10), transparent 28%),
-            #f6f8fb;
+            radial-gradient(circle at top left, rgba(56, 189, 248, 0.14), transparent 28%),
+            radial-gradient(circle at top right, rgba(34, 197, 94, 0.10), transparent 26%),
+            radial-gradient(circle at bottom center, rgba(99, 102, 241, 0.12), transparent 24%),
+            #050816;
+        color: #e2e8f0;
     }
     .hero-card, .soft-card {
-        background: white;
-        border: 1px solid rgba(15, 23, 42, 0.08);
+        background: rgba(8, 15, 32, 0.88);
+        border: 1px solid rgba(148, 163, 184, 0.14);
         border-radius: 20px;
         padding: 1.2rem 1.3rem;
-        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+        box-shadow: 0 18px 40px rgba(2, 6, 23, 0.36);
+        backdrop-filter: blur(12px);
     }
     .hero-card h1 {
         margin: 0 0 0.3rem 0;
         font-size: 2rem;
+        color: #f8fafc;
     }
     .hero-card p, .soft-card p {
         margin: 0;
-        color: #475569;
+        color: #cbd5e1;
     }
     .pill-row {
         display: flex;
@@ -42,12 +46,36 @@ st.markdown(
         margin-top: 1rem;
     }
     .pill {
-        background: #eef4ff;
-        color: #1d4ed8;
+        background: rgba(37, 99, 235, 0.18);
+        color: #bfdbfe;
         border-radius: 999px;
         padding: 0.45rem 0.8rem;
         font-size: 0.92rem;
         font-weight: 600;
+        border: 1px solid rgba(96, 165, 250, 0.18);
+    }
+    [data-testid="stMetric"] {
+        background: rgba(8, 15, 32, 0.82);
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        border-radius: 18px;
+        padding: 0.9rem 1rem;
+    }
+    [data-testid="stMetricLabel"], [data-testid="stMetricValue"] {
+        color: #e2e8f0;
+    }
+    [data-testid="stTabs"] button[role="tab"] {
+        background: rgba(15, 23, 42, 0.75);
+        border-radius: 999px;
+        color: #cbd5e1;
+        border: 1px solid rgba(148, 163, 184, 0.14);
+    }
+    [data-testid="stTabs"] button[aria-selected="true"] {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.30), rgba(16, 185, 129, 0.22));
+        color: #f8fafc;
+    }
+    [data-testid="stDataFrame"], [data-testid="stPlotlyChart"] {
+        background: rgba(8, 15, 32, 0.82);
+        border-radius: 18px;
     }
     </style>
     """,

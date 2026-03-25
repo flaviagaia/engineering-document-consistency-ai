@@ -106,6 +106,10 @@ O aplicativo foi organizado como uma experiência única para o usuário final, 
 - `Pergunte aos Documentos`
   Camada de consulta assistida baseada nas cláusulas e inconsistências.
 
+### Interface
+
+![Interface do Streamlit](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/engineering-document-consistency-ai/assets/streamlit_dashboard.jpg)
+
 ### Estrutura
 
 - [main.py](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/engineering-document-consistency-ai/main.py)
@@ -228,3 +232,7 @@ The application was designed as a single user-facing workspace with multiple mod
 - `Consistency`
 - `Human Review`
 - `Ask the Documents`
+
+### Interface
+
+![Streamlit interface](/Users/flaviagaia/Documents/CV_FLAVIA_CODEX/engineering-document-consistency-ai/assets/streamlit_dashboard.jpg)
